@@ -1,8 +1,11 @@
 int pulsePin = 8;
 unsigned long lastHeartbeat = 0;
 unsigned long lastUptimeReport = 0;
+unsigned long heartbeat_millis = millis();
 
 void heartbeat() {
+/* MEOW WOLF: Our heartbeat will use a timer to switch pin 8 from LOW to HIGH after about 300 ms (this gives the capacitor time to drain). We won't want to use a delay, but otherwise the heartbeat will be similar... -Cathy */ 
+
   // Sink current to drain charge from watchdog circuit
   pinMode(pulsePin, OUTPUT);
   digitalWrite(pulsePin, LOW);
@@ -25,6 +28,13 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
+  /*MEOW WOLF: Because there is no serial output connected, the default version of the loop tests the failure (reboot) case. The Arduino will reboot after about 270 seconds. Uncomment the following code to test the success case -- a live heartbeat, sent every five seconds. As long as the heartbeat continues, the Arduino won't reboot, and you should see the uptime continue past 300+ seconds in the Serial Monitor. -Cathy */
+  /* //UNCOMMENT THIS BLOCK TO TEST HEARTBEAT
+  if (millis() - heartbeat_millis > 5000) {
+     heartbeat();
+     heartbeat_millis = millis();
+  }
+*/
   // Check for serial inputs.  If found, send heartbeat.
   if (Serial.available()) {
     // Clear input buffer
