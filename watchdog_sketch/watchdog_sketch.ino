@@ -1,4 +1,4 @@
-int pulsePin = 8;
+int pulsePin = 4; //digital pin 4
 unsigned long lastHeartbeat = 0;
 unsigned long lastUptimeReport = 0;
 unsigned long heartbeat_millis = millis();
@@ -29,12 +29,16 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   /*MEOW WOLF: Because there is no serial output connected, the default version of the loop tests the failure (reboot) case. The Arduino will reboot after about 270 seconds. Uncomment the following code to test the success case -- a live heartbeat, sent every five seconds. As long as the heartbeat continues, the Arduino won't reboot, and you should see the uptime continue past 300+ seconds in the Serial Monitor. -Cathy */
-  /* //UNCOMMENT THIS BLOCK TO TEST HEARTBEAT
+  /* With the below heartbeat block commented out, Arduino should reset after approx 250 seconds */
+  /* If below heartbeat block is present, Arduino should not reset. Test to at least 500 seconds to verify this */
+  
+  //UNCOMMENT THIS BLOCK TO TEST HEARTBEAT. Or pull wire from digital pin
   if (millis() - heartbeat_millis > 5000) {
      heartbeat();
      heartbeat_millis = millis();
   }
-*/
+
+
   // Check for serial inputs.  If found, send heartbeat.
   if (Serial.available()) {
     // Clear input buffer
@@ -53,6 +57,3 @@ void loop() {
   // delay in between loops
   delay(100);
 }
-
-
-
