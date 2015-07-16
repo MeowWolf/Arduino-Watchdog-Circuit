@@ -4,7 +4,7 @@
 
 MONITOR_BAUDRATE	= 115200
 BOARD_TAG 				= uno 
-ARDUINO_LIBS 			= Watchdog Ethernet SPI OSC
+ARDUINO_LIBS 			= Watchdog Ethernet SPI 
 USER_LIB_PATH			= include
 
 #VARIANT = mega
