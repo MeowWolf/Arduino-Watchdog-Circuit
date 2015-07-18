@@ -1,0 +1,14 @@
+# all mac and ino files there are useless
+.build/
+
+#exclude build directories
+build/
+build-cli/
+build-*/
+
+#other shit
+*.DS_Store
+*.holder
+
+# vim files
+*.swp
