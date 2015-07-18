@@ -3,7 +3,8 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>  
 
-#define WD_PIN 4
+#define WD_PIN A0 //for analog pin 0 (default)
+//#define WD_PIN 4 //for digital pin 4 (optional)
 
 //the Arduino's IP and MAC
 IPAddress my_ip(192, 168, 1, 222);
