@@ -38,6 +38,7 @@ void Watchdog:: pet()
   tmpmillis = millis();
   if( tmpmillis - last_pet > HW_TIME_TILPAT )
     {
+
       if (Serial) {
 	char tmp[100];
 	sprintf(tmp, "Heartbeat sent.\nUptime: %lu\n", millis() / 1000);
@@ -49,7 +50,11 @@ void Watchdog:: pet()
 	  // bring it low
 	  pinMode(_pin, OUTPUT);
 	  digitalWrite(_pin, LOW);
-	  pin_low = true; //pin is now low
+	  /*	  if (Serial) {
+	    Serial.println("first millis: ");
+	    Serial.println(_curmillis);
+	    }*/
+  	  pin_low = true; //pin is now low
 	}
     }
 }
@@ -58,6 +63,15 @@ void Watchdog::pet2()
 {
   if (pin_low)
     {
+      if (!_client.connected()) {
+	delay(50);
+      }
+      
+      /*      if (Serial) {
+	Serial.println("second millis: ");
+	Serial.println(_curmillis);
+	}*/
+      
       /*      if (Serial)
 	      Serial.println("Pet2!\n");*/
       //if the pin is low we have NOT reset it to high, so do so.
@@ -98,10 +112,7 @@ void Watchdog::sendMsg(char *msg)
   if (_client.connected()) 
   {
     _curmillis = millis();
-    /*    if (Serial) {
-      Serial.println(_curmillis - _watchdog_millis);
-    }
-    */
+
     if (_curmillis - _watchdog_millis > 60000) {
       _uptime += 60000;
       sprintf(_message, "%s %d.%d.%d.%d %lu ", msg, _arduino_ip[0], _arduino_ip[1],
@@ -117,9 +128,8 @@ void Watchdog::sendMsg(char *msg)
     if (_curmillis - _watchdog_millis > 60000) {
       _uptime += 60000;
       _watchdog_millis = millis();
-      Serial.println("dogdelay\n");
-      delay(100); /*delay so that watchdogs still work when ethernet shield is
-		    disconnected */ 
+      //      Serial.println("dogdelay\n");
+      //delay(100);
     }
   }
 
