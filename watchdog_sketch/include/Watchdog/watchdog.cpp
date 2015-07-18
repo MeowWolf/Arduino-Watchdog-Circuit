@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "watchdog.h"
 
-Watchdog::Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port) {
+Watchdog::Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port, int pin) {
   //copies over / initializes all the variables
   _watchdog_millis = millis();
   _arduino_ip[0] = arduino_ip[0];
@@ -20,6 +20,7 @@ Watchdog::Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip
   _server_ip[3] = server_ip[3];
   _server_port = server_port;
   _uptime = 0;
+  _pin = pin;
 }
 
 /* Because the arduino pins stay in the LAST state we need to make sure that
@@ -46,8 +47,8 @@ void Watchdog:: pet()
       if(!pin_low)
 	{
 	  // bring it low
-	  pinMode(HW_WATCHDOG_PIN, OUTPUT);
-	  digitalWrite(HW_WATCHDOG_PIN, LOW);
+	  pinMode(_pin, OUTPUT);
+	  digitalWrite(_pin, LOW);
 	  pin_low = true; //pin is now low
 	}
     }
@@ -62,7 +63,7 @@ void Watchdog::pet2()
       //if the pin is low we have NOT reset it to high, so do so.
       //otherwise nothing.
       // set to HIGH-Z
-      pinMode(HW_WATCHDOG_PIN, INPUT);
+      pinMode(_pin, INPUT);
       pin_low = false; //pin is now high
     }
 }
@@ -116,6 +117,9 @@ void Watchdog::sendMsg(char *msg)
     if (_curmillis - _watchdog_millis > 60000) {
       _uptime += 60000;
       _watchdog_millis = millis();
+      Serial.println("dogdelay\n");
+      delay(100); /*delay so that watchdogs still work when ethernet shield is
+		    disconnected */ 
     }
   }
 

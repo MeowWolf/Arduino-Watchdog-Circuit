@@ -5,7 +5,7 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#define HW_WATCHDOG_PIN 4
+//#define HW_WATCHDOG_PIN 4
 #define HW_TIME_THRESHOLD 300
 #define HW_TIME_TILPAT 5000
 #define HW_RECONNECT_TIME 60000
@@ -13,7 +13,7 @@
 class Watchdog
 {
   public:
-  Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port);
+  Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port, int pin);
   void sendMsg(char *msg); //sends "msg" over Ethernet with IP and uptime
   void setup(); //initializes variables & connection
   
@@ -34,7 +34,8 @@ class Watchdog
   IPAddress _server_ip; //IPAddress for the server
   int _server_port; //port number for the server
   char _message[300]; //global var for msgSend
-
+  int _pin; //Arduino pin
+  
   //hardware watchdog variables
   unsigned long last_pet;
   bool pin_low;
