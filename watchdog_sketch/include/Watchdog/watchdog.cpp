@@ -20,7 +20,6 @@ Watchdog::Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip
   _server_ip[3] = server_ip[3];
   _server_port = server_port;
   _uptime = 0;
-
 }
 
 /* Because the arduino pins stay in the LAST state we need to make sure that
