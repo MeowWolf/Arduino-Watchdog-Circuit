@@ -63,6 +63,7 @@ void Watchdog::pet2()
 {
   if (pin_low)
     {
+      /* this delay handles the patting timing for the case where the Ethernet shield is disconnected, physically or otherwise. Without this delay the timing won't work and you'll get endless resets. */
       if (!_client.connected()) {
 	delay(50);
       }
@@ -128,8 +129,6 @@ void Watchdog::sendMsg(char *msg)
     if (_curmillis - _watchdog_millis > 60000) {
       _uptime += 60000;
       _watchdog_millis = millis();
-      //      Serial.println("dogdelay\n");
-      //delay(100);
     }
   }
 
