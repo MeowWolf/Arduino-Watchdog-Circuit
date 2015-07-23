@@ -7,11 +7,11 @@
 //#define WD_PIN 4 //for digital pin 4 (optional)
 
 //the Arduino's IP and MAC
-IPAddress my_ip(192, 168, 1, 222);
+IPAddress my_ip(10, 42, 16, 222);
 byte mac[] = { 0x02, 0x00, 0x00, 0x00, 0x00, 0x17 };
 
 // Watchdog server IP and port
-IPAddress wd_server_ip(192, 168, 1, 17);
+IPAddress wd_server_ip(10, 42, 16, 17);
 const unsigned int wd_server_port = 6666;
 
 Watchdog watchdog(my_ip, mac, wd_server_ip, wd_server_port, WD_PIN);
