@@ -5,7 +5,6 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-//#define HW_WATCHDOG_PIN 4
 #define HW_TIME_THRESHOLD 300
 #define HW_TIME_TILPAT 5000
 #define HW_RECONNECT_TIME 60000
@@ -13,11 +12,13 @@
 class Watchdog
 {
   public:
-  Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port, int pin);
+  Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip, int server_port, int pin, int wd_debug);
   void sendMsg(char *msg); //sends "msg" over Ethernet with IP and uptime
   void setup(); //initializes variables & connection
   
-  // hardware watchdog
+  // hardware watchdog. Two-part, must call both parts within ONE function.
+  // don't call them in separate functions, because your stuck Arduino may
+  // never reset!
   void pet();
   void pet2();
 
@@ -35,11 +36,11 @@ class Watchdog
   int _server_port; //port number for the server
   char _message[300]; //global var for msgSend
   int _pin; //Arduino pin
+  int _wd_debug; //print to Serial if 1, if 0 don't
   
   //hardware watchdog variables
-  unsigned long last_pet;
-  bool pin_low;
-
+  unsigned long last_pet; //holds the last time we pet
+  bool pin_low; //signals whether to pull the pin low
 }; 
 
 #endif
