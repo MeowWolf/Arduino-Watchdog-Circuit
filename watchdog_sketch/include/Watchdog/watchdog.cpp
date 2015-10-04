@@ -35,6 +35,7 @@ Watchdog::Watchdog(IPAddress arduino_ip, byte arduino_mac[], IPAddress server_ip
 
 void Watchdog:: pet()
 {
+  Serial.println("in pet");
   tmpmillis = millis();
   if( tmpmillis - last_pet > HW_TIME_TILPAT )
     {
@@ -57,10 +58,12 @@ void Watchdog:: pet()
   	  pin_low = true; //pin is now low
 	}
     }
+  Serial.println("out of pet");
 }
 
 void Watchdog::pet2()
 {
+  Serial.println("in pet2");
   if (pin_low)
     {
       /* this delay handles the patting timing for the case where the Ethernet shield is disconnected, physically or otherwise. Without this delay the timing won't work and you'll get endless resets. */
@@ -81,6 +84,7 @@ void Watchdog::pet2()
       pinMode(_pin, INPUT);
       pin_low = false; //pin is now high
     }
+    Serial.println("out of pet2");
 }
 
 /* Tries to make the initial connection to the server */ 
@@ -94,11 +98,11 @@ void Watchdog::setup()
   if (_client.connect(_server_ip, _server_port)) {
     // if you get a connection, report back via serial:
     if (Serial)
-      Serial.println("Successfully connected");
+      Serial.println("Successfully connected (setup)");
   } else {
     // if you didn't get a connection to the server:
     if (Serial)
-      Serial.println("No Ethernet connection");
+      Serial.println("No Ethernet connection (setup)");
   }
 }
 
@@ -146,7 +150,7 @@ void Watchdog::sendMsg(char *msg)
       else {
 	// if you didn't get a connection to the server:
 	if (Serial)
-	  Serial.println("No Ethernet connection");
+	  Serial.println("No Ethernet connection (client not connected)");
       }
     }
   }
