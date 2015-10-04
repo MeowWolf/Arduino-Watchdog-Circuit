@@ -26,7 +26,8 @@ void setup() {
   Ethernet.begin(mac, my_ip);
   // initialize serial communication at 9600 bits per second:
   Serial.begin(115200);
-  Serial.println("Arduino reset");
+  if (WD_DEBUG == 1)
+     Serial.println("Arduino reset");
   
   // Send an initial heartbeat.
   watchdog.setup();
