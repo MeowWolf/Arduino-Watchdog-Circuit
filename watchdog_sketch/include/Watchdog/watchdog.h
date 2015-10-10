@@ -5,9 +5,8 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#define HW_TIME_THRESHOLD 300
-#define HW_TIME_TILPAT 5000
-#define HW_RECONNECT_TIME 60000
+#define HW_TIME_TILPAT 5000 // 5 seconds between pats
+#define HW_SENDMSG_TIME 60000 // 60 seconds between OKAY messages
 
 class Watchdog
 {
@@ -16,19 +15,18 @@ class Watchdog
   void sendMsg(char *msg); //sends "msg" over Ethernet with IP and uptime
   void setup(); //initializes variables & connection
   
-  // hardware watchdog. Two-part, must call both parts within ONE function.
+  // hardware watchdog. Two-part, you must call both parts within ONE function.
   // don't call them in separate functions, because your stuck Arduino may
   // never reset!
   void pet();
   void pet2();
 
   private:
-  EthernetClient _client;
+  //software watchdog variables
+  EthernetClient _client; //TCP connection for the watchdog server
   unsigned long _uptime; //total uptime. Figured by adding 120 sec each msgSend
   unsigned long _watchdog_millis; //total milliseconds since the last msgSend
-  unsigned long _curmillis; //global var for msgSend
-  unsigned long _reconnect_millis = 0; //total ms since the last reconnect attempt
-  unsigned long tmpmillis;
+  unsigned long _curmillis; //global var for msgSend (current ms)
 
   IPAddress _arduino_ip; //IPAddress for the arduino
   byte _arduino_mac[]; //mac address for the arduino
