@@ -4,16 +4,17 @@
 #include <EthernetUdp.h>  
 
 #define WD_PIN A0
+#define WD_DEBUG 0
 
 //the Arduino's IP and MAC
 IPAddress my_ip(10, 42,16, 171);
 byte mac[] = { 0x02, 0x00, 0x00, 0x00, 0x00, 0x11 };
 
 // Watchdog server IP and port
-IPAddress wd_server_ip(10,42, 16, 17);
+IPAddress wd_server_ip(10, 42, 16, 17);
 const unsigned int wd_server_port = 6666;
 
-Watchdog watchdog(my_ip, mac, wd_server_ip, wd_server_port, WD_PIN);
+Watchdog watchdog(my_ip, mac, wd_server_ip, wd_server_port, WD_PIN, WD_DEBUG);
 
 // the setup routine runs once when you press reset:
 void setup() {

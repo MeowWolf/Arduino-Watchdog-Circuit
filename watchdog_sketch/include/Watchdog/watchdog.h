@@ -23,7 +23,7 @@ class Watchdog
 
   private:
   //software watchdog variables
-  EthernetClient _client; //TCP connection for the watchdog server
+  EthernetUDP _client; //UDP connection for the watchdog server
   unsigned long _uptime; //total uptime. Figured by adding 120 sec each msgSend
   unsigned long _watchdog_millis; //total milliseconds since the last msgSend
   unsigned long _curmillis; //global var for msgSend (current ms)

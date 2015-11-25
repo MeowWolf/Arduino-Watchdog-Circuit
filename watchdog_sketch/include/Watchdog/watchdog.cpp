@@ -62,10 +62,13 @@ void Watchdog::pet2()
 {
   if (pin_low)
     {
-      /* this delay handles the patting timing for the case where the Ethernet shield is disconnected, physically or otherwise. Without this delay the timing won't work and you'll get endless resets. */
-      if (!_client.connected()) {
-	delay(50);
-      }
+      /* this delay handles the patting timing for the hardware watchdog. Without this delay the timing won't work and you'll get endless resets. */
+
+      delay(40);
+      
+      // if (!_client.connected()) {
+      //	delay(50);
+      // }
       
       //if the pin is low we have NOT reset it to high, so do so.
       //otherwise nothing.
@@ -82,6 +85,7 @@ void Watchdog::setup()
   last_pet = millis();
   _watchdog_millis = millis();
   pin_low = true;
+  _client.begin(7777); // start UDP client
 }
 
 /* Connects to the watchdog server and sends an OKAY message (also adds 60 to uptime) if at least 60 seconds have passed since last send. Then drops the connection. */
@@ -94,53 +98,27 @@ void Watchdog::sendMsg(char *msg)
 
   pet();
 
-  /* check time. if > 60 seconds since the last time we sent a message:
-     create new connection. send a message. drop connection. 
-     Dropping the connection is VERY IMPORTANT on arduino. If connections 
-     are lost and not dropped then subsequent connections will eventually 
-     fill up memory and reset the arduino. */
+  /* check time. if > 60 seconds since the last time we sent a message, send */
 
   //grab current time and compare to the last time we sent
   _curmillis = millis();
   if (_curmillis - _watchdog_millis > HW_SENDMSG_TIME) {
 
-    if (!_client.connected()) {
-      // if not connected (we shouldn't be!), create new connection
-      Serial.println(F("Reconnecting"));
-      if (_client.connect(_server_ip, _server_port)) {
-	if (_wd_debug == 1)
-	  Serial.println(F("Connected"));
-      } else {
-	// if you didn't get a connection to the server, say so
-	if (_wd_debug == 1)
-	  Serial.println(F("No Ethernet"));
-      } 
-    }
-    
-    // if client is connected, send message
-    if (_client.connected()) 
-      {
-	_uptime += HW_SENDMSG_TIME;
-	sprintf(_message, "%s %d.%d.%d.%d %lu ", msg, _arduino_ip[0], _arduino_ip[1],
-		_arduino_ip[2], _arduino_ip[3], _uptime/1000);
-	
-	_client.write(_message);
-      
-	if (_wd_debug == 1)
-	  Serial.println(_message);      
+    _uptime += HW_SENDMSG_TIME;
+    sprintf(_message, "%s %d.%d.%d.%d %lu ", msg, _arduino_ip[0], _arduino_ip[1],
+	    _arduino_ip[2], _arduino_ip[3], _uptime/1000);
 
-	//drop connection if connected. this keeps arduino from wasting memory
-	if (_wd_debug == 1)
-	  Serial.println(F("Stop connection"));
-	_client.stop();
-      }
+    _client.beginPacket(_server_ip, _server_port);
+    _client.write(_message);
+    _client.endPacket();
+    
+    if (_wd_debug == 1)
+      Serial.println(_message);      
     //update time so the next send happens in 60 s
     _watchdog_millis = millis();
   }
-
   //pet HW watchdog, part 2
   pet2();
-  
 }
   
 
